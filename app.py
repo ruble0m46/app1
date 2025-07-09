@@ -22,43 +22,74 @@ for subject in subject_names:
             )
         user_input.append(score)
 
-# 버튼 누르면 결과 출력 및 자동 스크롤
+# 버튼을 누르면 결과를 세션 상태에 저장
 if st.button("📊 추천 결과 보기"):
+    st.session_state.show_results = True
+    st.session_state.user_input = user_input.copy()
+
+# 결과가 있을 때만 표시
+if getattr(st.session_state, 'show_results', False):
+    # 큰 공백으로 시각적 분리
+    st.markdown("<br><br>", unsafe_allow_html=True)
     
-    # 결과 섹션
-    st.markdown("---")
-    st.header("🔍 분석 결과")
-
-    st.subheader("1. 평균편차 + 분산 기반 추천")
-    results = calculate_similarity(user_input)
-    for i, (idx, score) in enumerate(results):
-        st.write(f"🔹 {i+1}위 선택 과목: {score['choice']}")
-        st.write(f"불일치 정도: {score['distance']:.4f}, 평균편차: {score['mean_diff']:.4f}, 분산: {score['variance']:.4f}")
-
-    st.subheader("2. 피어슨 상관계수 추천")
-    results = calculate_pearson(user_input)
-    for i, (idx, val) in enumerate(results):
-        st.write(f"🔹 {i+1}위 선택 과목: {val['choice']}, 피어슨 상관계수: {val['score']:.4f}")
-
-    st.subheader("3. 코사인 유사도 추천")
-    results = calculate_cosine(user_input)
-    for i, (idx, val) in enumerate(results):
-        st.write(f"🔹 {i+1}위 선택 과목: {val['choice']}, 코사인 유사도: {val['score']:.4f}")
-    
-    # 자동 스크롤을 위한 JavaScript 코드 (더 강력한 방법)
+    # 강조된 결과 헤더
     st.markdown("""
+        <div style="background-color: #f0f2f6; padding: 20px; border-radius: 10px; margin: 20px 0;">
+            <h2 style="color: #1f1f1f; text-align: center;">🔍 분석 결과</h2>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    # 결과 표시
+    user_data = st.session_state.user_input
+    
+    st.markdown("### 1. 평균편차 + 분산 기반 추천")
+    results = calculate_similarity(user_data)
+    for i, (idx, score) in enumerate(results):
+        st.markdown(f"""
+            <div style="background-color: #e8f4f8; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #0066cc;">
+                <strong>🔹 {i+1}위 선택 과목:</strong> {score['choice']}<br>
+                <small>불일치 정도: {score['distance']:.4f}, 평균편차: {score['mean_diff']:.4f}, 분산: {score['variance']:.4f}</small>
+            </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("### 2. 피어슨 상관계수 추천")
+    results = calculate_pearson(user_data)
+    for i, (idx, val) in enumerate(results):
+        st.markdown(f"""
+            <div style="background-color: #f0f8e8; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #66cc00;">
+                <strong>🔹 {i+1}위 선택 과목:</strong> {val['choice']}<br>
+                <small>피어슨 상관계수: {val['score']:.4f}</small>
+            </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("### 3. 코사인 유사도 추천")
+    results = calculate_cosine(user_data)
+    for i, (idx, val) in enumerate(results):
+        st.markdown(f"""
+            <div style="background-color: #f8f0e8; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #cc6600;">
+                <strong>🔹 {i+1}위 선택 과목:</strong> {val['choice']}<br>
+                <small>코사인 유사도: {val['score']:.4f}</small>
+            </div>
+        """, unsafe_allow_html=True)
+    
+    # 다시 선택하기 버튼
+    if st.button("🔄 다시 선택하기"):
+        st.session_state.show_results = False
+        st.rerun()
+    
+    # CSS로 스크롤 애니메이션 효과 추가
+    st.markdown("""
+        <style>
+        .main .block-container {
+            scroll-behavior: smooth;
+        }
+        </style>
         <script>
-        function scrollToResults() {
-            // 페이지 맨 아래로 스크롤
+        setTimeout(function() {
             window.scrollTo({
                 top: document.body.scrollHeight,
                 behavior: 'smooth'
             });
-        }
-        
-        // 약간의 지연 후 스크롤 실행 (컨텐츠가 완전히 로드된 후)
-        setTimeout(scrollToResults, 100);
-        setTimeout(scrollToResults, 500);
-        setTimeout(scrollToResults, 1000);
+        }, 100);
         </script>
     """, unsafe_allow_html=True)
