@@ -48,17 +48,33 @@ if st.button("📊 추천 결과 보기"):
     # 자동 스크롤을 위한 JavaScript 코드 (더 강력한 방법)
     st.markdown("""
         <script>
-        function scrollToResults() {
-            // 페이지 맨 아래로 스크롤
+        function scrollToBottom() {
+            // 여러 방법으로 스크롤 시도
             window.scrollTo({
                 top: document.body.scrollHeight,
                 behavior: 'smooth'
             });
+            
+            // 대안 방법
+            document.documentElement.scrollTop = document.documentElement.scrollHeight;
+            
+            // Streamlit 컨테이너가 있다면 그것도 스크롤
+            const mainContainer = document.querySelector('.main .block-container');
+            if (mainContainer) {
+                mainContainer.scrollTop = mainContainer.scrollHeight;
+            }
         }
         
-        // 약간의 지연 후 스크롤 실행 (컨텐츠가 완전히 로드된 후)
-        setTimeout(scrollToResults, 100);
-        setTimeout(scrollToResults, 500);
-        setTimeout(scrollToResults, 1000);
+        // 여러 시점에서 스크롤 실행
+        scrollToBottom();
+        setTimeout(scrollToBottom, 100);
+        setTimeout(scrollToBottom, 300);
+        setTimeout(scrollToBottom, 500);
+        setTimeout(scrollToBottom, 1000);
+        
+        // 페이지 로드 완료 후에도 실행
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', scrollToBottom);
+        }
         </script>
     """, unsafe_allow_html=True)
