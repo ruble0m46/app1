@@ -22,18 +22,11 @@ for subject in subject_names:
             )
         user_input.append(score)
 
-# 결과 섹션에 고유 앵커 지정
-st.markdown("<div id='results'></div>", unsafe_allow_html=True)
-
 # 버튼 누르면 결과 출력 및 자동 스크롤
 if st.button("📊 추천 결과 보기"):
-    # JavaScript로 스크롤 이동
-    st.markdown("""
-        <script>
-            document.getElementById("results").scrollIntoView({behavior: 'smooth'});
-        </script>
-    """, unsafe_allow_html=True)
-
+    
+    # 결과 섹션
+    st.markdown("---")
     st.header("🔍 분석 결과")
 
     st.subheader("1. 평균편차 + 분산 기반 추천")
@@ -51,3 +44,21 @@ if st.button("📊 추천 결과 보기"):
     results = calculate_cosine(user_input)
     for i, (idx, val) in enumerate(results):
         st.write(f"🔹 {i+1}위 선택 과목: {val['choice']}, 코사인 유사도: {val['score']:.4f}")
+    
+    # 자동 스크롤을 위한 JavaScript 코드 (더 강력한 방법)
+    st.markdown("""
+        <script>
+        function scrollToResults() {
+            // 페이지 맨 아래로 스크롤
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+        
+        // 약간의 지연 후 스크롤 실행 (컨텐츠가 완전히 로드된 후)
+        setTimeout(scrollToResults, 100);
+        setTimeout(scrollToResults, 500);
+        setTimeout(scrollToResults, 1000);
+        </script>
+    """, unsafe_allow_html=True)
