@@ -11,7 +11,12 @@ def calculate_similarity(user_data):
         mean_diff = sum(diffs) / len(sample)
         variance = sum(sq) / len(sample)
         distance = mean_diff * 0.75 + variance * 0.25
-        out.append((i, {"choice": sample_choices[i], "distance": distance}))
+        out.append((i, {
+            "choice": sample_choices[i], 
+            "distance": distance,
+            "mean_diff": mean_diff,
+            "variance": variance
+        }))
     return sorted(out, key=lambda x: x[1]["distance"])[:3]
 
 def calculate_pearson(user_data):
