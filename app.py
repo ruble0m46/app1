@@ -4,7 +4,7 @@ from data import subject_names
 
 st.set_page_config(page_title="과목 추천", layout="centered")
 
-st.title("🎓 과목 선택 유사도 추천 시스템")
+st.title("🎓 과목 선택 매칭 시스템")
 st.write("각 과목에 대한 선호도를 1점(낮음)~5점(높음) 중 선택해주세요.")
 
 user_input = []
