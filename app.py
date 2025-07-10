@@ -7,7 +7,6 @@ st.set_page_config(page_title="과목 추천", layout="centered")
 st.title("🎓 과목 선택 유사도 추천 시스템")
 st.write("각 과목에 대한 선호도를 1점(낮음)~5점(높음) 중 선택해주세요.")
 
-# 사용자 입력 받기 (체크박스처럼 보이는 라디오버튼 스타일)
 user_input = []
 for subject in subject_names:
     with st.container():
@@ -22,12 +21,10 @@ for subject in subject_names:
             )
         user_input.append(score)
 
-# 버튼 누르면 결과 출력 및 자동 스크롤
-if st.button("📊 추천 결과 보기"):
-    # 팝업 메시지 (st.info를 사용하여 정보성 메시지 표시)
-    st.info("스크롤을 내려 추천 결과를 확인하세요! 👇") # Added popup message
 
-    # 결과 섹션
+if st.button("📊 추천 결과 보기"):
+    st.info("스크롤을 내려 추천 결과를 확인하세요! 👇")
+
     st.markdown("---")
     st.header("🔍 분석 결과")
 
@@ -47,20 +44,3 @@ if st.button("📊 추천 결과 보기"):
     for i, (idx, val) in enumerate(results):
         st.write(f"🔹 {i+1}위 선택 과목: {val['choice']}, 코사인 유사도: {val['score']:.4f}")
     
-    # 자동 스크롤을 위한 JavaScript 코드 (더 강력한 방법)
-    st.markdown("""
-        <script>
-        function scrollToResults() {
-            // 페이지 맨 아래로 스크롤
-            window.scrollTo({
-                top: document.body.scrollHeight,
-                behavior: 'smooth'
-            });
-        }
-        
-        // 약간의 지연 후 스크롤 실행 (컨텐츠가 완전히 로드된 후)
-        setTimeout(scrollToResults, 100);
-        setTimeout(scrollToResults, 500);
-        setTimeout(scrollToResults, 1000);
-        </script>
-    """, unsafe_allow_html=True)
